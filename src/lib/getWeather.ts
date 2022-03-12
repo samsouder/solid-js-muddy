@@ -1,9 +1,42 @@
 import { GeoCoordinates } from "./checkIsMuddy";
+import { OpenWeatherMapApi } from "ts-open-weather-map";
 
-export const getWeather = async (coords: GeoCoordinates) => {
-  console.log("Coordinates", coords);
+const weatherApiKey = process.env.SOLID_APP_OPENWEATHER_API_KEY ?? "";
+const api = new OpenWeatherMapApi(weatherApiKey);
 
-  await new Promise((resolve) => setTimeout(resolve, 2000));
+export interface WeatherData {
+  averageTemperature: number;
+  precipitation: number;
+}
 
-  return { temperature: Math.floor(Math.random() * 70), precipitation: 1.1 };
+export const getWeather = async (
+  coords: GeoCoordinates
+): Promise<WeatherData> => {
+  const weather = await api.oneCall(
+    coords.latitude,
+    coords.longitude,
+    ["alerts", "current", "minutely", "hourly"],
+    "imperial"
+  );
+
+  if (!weather.daily) {
+    throw new Error("No daily weather data loaded");
+  }
+
+  // Average out the temperatures of the last 3 days
+  // Add up the precipitation of the last 3 days
+  let avgTemp = 0;
+  let precip = 0;
+  const last3Days = weather.daily.slice(0, 3);
+  last3Days.forEach((day) => {
+    // What's the hottest temp on each day?
+    avgTemp += day.temp.max;
+
+    // Rain and snow are the same thing if it's hot enough
+    precip += day.rain ?? 0;
+    precip += day.snow ?? 0;
+  });
+  avgTemp = avgTemp / last3Days.length;
+
+  return { averageTemperature: avgTemp, precipitation: precip };
 };

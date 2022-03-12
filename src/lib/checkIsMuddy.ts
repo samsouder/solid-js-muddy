@@ -1,27 +1,31 @@
-import { getWeather } from "./getWeather";
+import { getWeather, WeatherData } from "./getWeather";
 
 export interface GeoCoordinates {
   latitude: number;
   longitude: number;
 }
 
-export const checkIsMuddy = async (coords: GeoCoordinates | undefined) => {
-  if (!coords) {
-    console.log("No coordinates, skipping weather check");
+export interface Weather extends WeatherData {
+  isMuddy: boolean;
+}
 
-    return false;
+export const checkIsMuddy = async (
+  coords: GeoCoordinates | undefined
+): Promise<Weather> => {
+  if (!coords) {
+    throw new Error("No coordinates");
   }
 
-  // Get weather for today in the current location
+  // Get weather for last 3 days in the current location
   const weather = await getWeather(coords);
 
   console.log("Weather", weather);
 
   // If temperature is less than 32, return false because it's freezing
-  if (weather.temperature < 32) return false;
+  if (weather.averageTemperature < 32) return { ...weather, isMuddy: false };
 
   // If there is any precipitation today, return true
-  if (weather.precipitation > 0) return true;
+  if (weather.precipitation > 0) return { ...weather, isMuddy: true };
 
-  return false;
+  return { ...weather, isMuddy: false };
 };

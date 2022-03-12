@@ -2,21 +2,47 @@ import "./App.css";
 import MuddyIcon from "./components/MuddyIcon";
 import NotMuddyIcon from "./components/NotMuddyIcon";
 import UnknownIcon from "./components/UnknownIcon";
-import { checkIsMuddy, GeoCoordinates } from "./lib/checkIsMuddy";
-import { createEffect, createResource, createSignal, Show } from "solid-js";
+import { createResource, createSignal, Show } from "solid-js";
+import { checkIsMuddy, GeoCoordinates, Weather } from "./lib/checkIsMuddy";
+import { getLocation } from "./lib/getLocation";
+import { getFromLocalStorage, setToLocalStorage } from "./lib/cache";
+
+// Cache location and weather for 1 day
+const locationCacheLength = 1 * 24 * 60 * 60 * 1000;
+const weatherCacheLength = 1 * 24 * 60 * 60 * 1000;
 
 const App = () => {
-  const [coords, setCoords] = createSignal<GeoCoordinates>();
-  const [isMuddy] = createResource(coords, checkIsMuddy);
+  const [coords, setCoords] = createSignal<GeoCoordinates | undefined>(
+    getFromLocalStorage<GeoCoordinates>("location")
+  );
+  const setLocationFromCoords = (newCoords: GeoCoordinates) => {
+    console.log("Setting location from coords", newCoords);
+    setToLocalStorage("location", newCoords, locationCacheLength);
+    setCoords(newCoords);
+  };
+  const setLocationFromBrowser = async () => {
+    const newCoords = await getLocation();
+    setLocationFromCoords(newCoords);
+  };
+  const muddyCheck = async () => {
+    const key = `weather-${coords()?.latitude}-${coords()?.longitude}`;
+    const cachedWeather = getFromLocalStorage<Weather>(key);
+    if (cachedWeather) {
+      return cachedWeather;
+    }
 
-  createEffect(() => {
-    console.log("isMuddy?", isMuddy());
-  });
+    const weather = await checkIsMuddy(coords());
+    setToLocalStorage(key, weather, weatherCacheLength);
+
+    return weather;
+  };
+  const [isMuddy] = createResource(coords, muddyCheck);
 
   return (
     <div class="App">
       <header class="AppHeader">
         <h1>Muddy or Not?</h1>
+        <p>Will it be muddy in the next 3 days?</p>
       </header>
       <article class="AppBar">
         <form
@@ -26,7 +52,7 @@ const App = () => {
               longitude: parseFloat(event.currentTarget.elements["lon"].value),
             };
             if (newCoords.latitude && newCoords.longitude) {
-              setCoords(newCoords);
+              setLocationFromCoords(newCoords);
             }
 
             event.preventDefault();
@@ -35,11 +61,7 @@ const App = () => {
           <button
             type="button"
             name="lookup"
-            onClick={() => {
-              navigator.geolocation.getCurrentPosition((location) => {
-                setCoords(location.coords);
-              });
-            }}
+            onClick={() => setLocationFromBrowser()}
           >
             Where Am I?
           </button>
@@ -59,19 +81,37 @@ const App = () => {
           <button type="submit">Muddy?</button>
         </form>
       </article>
-      <article class="AppAnswer">
-        {/* <pre>isMuddy?: {JSON.stringify(isMuddy(), null, 2)}</pre> */}
+      <Show
+        when={coords()?.latitude && coords()?.longitude}
+        fallback={
+          <article class="AppAnswer">
+            <UnknownIcon />
+          </article>
+        }
+      >
         <Show
-          when={coords()?.latitude && coords()?.longitude}
-          fallback={<UnknownIcon />}
+          when={!isMuddy.loading}
+          fallback={
+            <article class="AppAnswer">
+              <p>Loading...</p>
+            </article>
+          }
         >
-          <Show when={!isMuddy.loading} fallback={<p>Loading...</p>}>
-            <Show when={isMuddy()} fallback={<NotMuddyIcon />}>
+          <aside class="AppSideBar">
+            <dl>
+              <dt>3 day average temp:</dt>
+              <dd>{isMuddy()?.averageTemperature.toFixed()} &deg;</dd>
+              <dt>3 day precipitation total:</dt>
+              <dd>{isMuddy()?.precipitation.toPrecision(2)} &Prime;</dd>
+            </dl>
+          </aside>
+          <article class="AppAnswer">
+            <Show when={isMuddy()?.isMuddy} fallback={<NotMuddyIcon />}>
               <MuddyIcon />
             </Show>
-          </Show>
+          </article>
         </Show>
-      </article>
+      </Show>
       <footer class="AppFooter">
         <p>
           <a href="https://www.flaticon.com/free-icons/mud">
