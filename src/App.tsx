@@ -1,6 +1,5 @@
 import "./App.css";
-import pig from "./pig.png";
-import sunshine from "./sunshine.png";
+import MuddyOrNotIcon from "./MuddyOrNotIcon";
 
 function App() {
   return (
@@ -20,7 +19,7 @@ function App() {
         </form>
       </article>
       <article class="AppAnswer">
-        <img class="AppMuddyIcon" src={pig} title="Muddy" alt="Muddy" />
+        <MuddyOrNotIcon muddy={true} />
       </article>
       <footer class="AppFooter">
         <p>

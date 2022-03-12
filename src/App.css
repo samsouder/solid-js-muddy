@@ -47,7 +47,6 @@
 
 .AppMuddyIcon {
   height: 40vmin;
-  pointer-events: none;
   transform: scale(1);
   animation: MuddyIconPulse 2s infinite;
 }
