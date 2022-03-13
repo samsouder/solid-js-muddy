@@ -19,8 +19,6 @@ export const checkIsMuddy = async (
   // Get weather for last 3 days in the current location
   const weather = await getWeather(coords);
 
-  console.log("Weather", weather);
-
   // If temperature is less than 32, return false because it's freezing
   if (weather.averageTemperature < 32) return { ...weather, isMuddy: false };
 

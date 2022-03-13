@@ -11,6 +11,8 @@ import { getFromLocalStorage, setToLocalStorage } from "./lib/cache";
 const locationCacheLength = 1 * 24 * 60 * 60 * 1000;
 const weatherCacheLength = 1 * 24 * 60 * 60 * 1000;
 
+// TODO: Add ErrorBoundary around components
+// TODO: Investigate server-side rendering
 const App = () => {
   const [coords, setCoords] = createSignal<GeoCoordinates | undefined>(
     getFromLocalStorage<GeoCoordinates>("location")
@@ -42,9 +44,9 @@ const App = () => {
     <div class="App">
       <header class="AppHeader">
         <h1>Muddy or Not?</h1>
-        <p>Will it be muddy in the next 3 days?</p>
+        <h2>Will it be muddy in the next 3 days?</h2>
       </header>
-      <article class="AppBar">
+      <article class="AppBar" role="menubar">
         <form
           onSubmit={(event) => {
             const newCoords = {

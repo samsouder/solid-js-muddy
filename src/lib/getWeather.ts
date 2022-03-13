@@ -1,7 +1,8 @@
 import { GeoCoordinates } from "./checkIsMuddy";
 import { OpenWeatherMapApi } from "ts-open-weather-map";
 
-const weatherApiKey = process.env.SOLID_APP_OPENWEATHER_API_KEY ?? "";
+const weatherApiKey =
+  (import.meta.env.VITE_OPENWEATHER_API_KEY as string) ?? "";
 const api = new OpenWeatherMapApi(weatherApiKey);
 
 export interface WeatherData {
@@ -12,6 +13,8 @@ export interface WeatherData {
 export const getWeather = async (
   coords: GeoCoordinates
 ): Promise<WeatherData> => {
+  console.log("NOT MOCKED OUT!!!!!");
+
   const weather = await api.oneCall(
     coords.latitude,
     coords.longitude,
