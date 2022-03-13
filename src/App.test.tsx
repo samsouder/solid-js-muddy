@@ -6,6 +6,7 @@ import {
   waitFor,
   waitForElementToBeRemoved,
 } from "solid-testing-library";
+import { vi } from "vitest";
 import { mswServer } from "./mocks/server";
 import { rest } from "msw";
 import App from "./App";

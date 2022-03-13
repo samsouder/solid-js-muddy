@@ -15,8 +15,7 @@
     "noEmit": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noImplicitReturns": true,
-    "types": ["vitest/globals"]
+    "noImplicitReturns": true
   },
   "include": ["src"]
 }
