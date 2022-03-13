@@ -12,6 +12,7 @@ export interface Weather extends WeatherData {
 export const checkIsMuddy = async (
   coords: GeoCoordinates | undefined
 ): Promise<Weather> => {
+  /* c8 ignore next 3 */
   if (!coords) {
     throw new Error("No coordinates");
   }

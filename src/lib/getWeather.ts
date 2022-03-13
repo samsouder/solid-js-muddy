@@ -1,20 +1,17 @@
 import { GeoCoordinates } from "./checkIsMuddy";
 import { OpenWeatherMapApi } from "ts-open-weather-map";
 
-const weatherApiKey =
-  (import.meta.env.VITE_OPENWEATHER_API_KEY as string) ?? "";
-const api = new OpenWeatherMapApi(weatherApiKey);
-
 export interface WeatherData {
   averageTemperature: number;
   precipitation: number;
 }
 
+const weatherApiKey = import.meta.env.VITE_OPENWEATHER_API_KEY as string;
+
 export const getWeather = async (
   coords: GeoCoordinates
 ): Promise<WeatherData> => {
-  console.log("NOT MOCKED OUT!!!!!");
-
+  const api = new OpenWeatherMapApi(weatherApiKey);
   const weather = await api.oneCall(
     coords.latitude,
     coords.longitude,
@@ -33,7 +30,7 @@ export const getWeather = async (
   const last3Days = weather.daily.slice(0, 3);
   last3Days.forEach((day) => {
     // What's the hottest temp on each day?
-    avgTemp += day.temp.max;
+    avgTemp += day.temp.max ?? 0;
 
     // Rain and snow are the same thing if it's hot enough
     precip += day.rain ?? 0;

@@ -2,7 +2,7 @@ import "./App.css";
 import MuddyIcon from "./components/MuddyIcon";
 import NotMuddyIcon from "./components/NotMuddyIcon";
 import UnknownIcon from "./components/UnknownIcon";
-import { createResource, createSignal, Show } from "solid-js";
+import { createResource, createSignal, ErrorBoundary, Show } from "solid-js";
 import { checkIsMuddy, GeoCoordinates, Weather } from "./lib/checkIsMuddy";
 import { getLocation } from "./lib/getLocation";
 import { getFromLocalStorage, setToLocalStorage } from "./lib/cache";
@@ -11,7 +11,6 @@ import { getFromLocalStorage, setToLocalStorage } from "./lib/cache";
 const locationCacheLength = 1 * 24 * 60 * 60 * 1000;
 const weatherCacheLength = 1 * 24 * 60 * 60 * 1000;
 
-// TODO: Add ErrorBoundary around components
 // TODO: Investigate server-side rendering
 const App = () => {
   const [coords, setCoords] = createSignal<GeoCoordinates | undefined>(
@@ -48,6 +47,7 @@ const App = () => {
       </header>
       <article class="AppBar" role="menubar">
         <form
+          data-testid="location-form"
           onSubmit={(event) => {
             const newCoords = {
               // @ts-ignore
@@ -93,28 +93,37 @@ const App = () => {
           </article>
         }
       >
-        <Show
-          when={!isMuddy.loading}
+        <ErrorBoundary
           fallback={
             <article class="AppAnswer">
-              <p>Loading...</p>
+              <p>Error loading weather data</p>
             </article>
           }
         >
-          <aside class="AppSideBar">
-            <dl>
-              <dt>Average Temperature:</dt>
-              <dd>{isMuddy()?.averageTemperature.toFixed()} &deg;</dd>
-              <dt>Precipitation Total:</dt>
-              <dd>{isMuddy()?.precipitation.toPrecision(2)} &Prime;</dd>
-            </dl>
-          </aside>
-          <article class="AppAnswer">
-            <Show when={isMuddy()?.isMuddy} fallback={<NotMuddyIcon />}>
-              <MuddyIcon />
-            </Show>
-          </article>
-        </Show>
+          <Show
+            when={!isMuddy.loading}
+            fallback={
+              <article class="AppAnswer">
+                <p>Loading...</p>
+              </article>
+            }
+          >
+            <aside class="AppSideBar">
+              <h3>Forecast</h3>
+              <dl>
+                <dt>Average Temperature:</dt>
+                <dd>{isMuddy()?.averageTemperature.toFixed()} &deg;</dd>
+                <dt>Precipitation Total:</dt>
+                <dd>{isMuddy()?.precipitation.toPrecision(2)} &Prime;</dd>
+              </dl>
+            </aside>
+            <article class="AppAnswer">
+              <Show when={isMuddy()?.isMuddy} fallback={<NotMuddyIcon />}>
+                <MuddyIcon />
+              </Show>
+            </article>
+          </Show>
+        </ErrorBoundary>
       </Show>
       <footer class="AppFooter">
         <p>

@@ -34,5 +34,6 @@ export const getFromLocalStorage = <T>(key: string): T | undefined => {
     return cachedData as T;
   }
 
+  /* c8 ignore next */
   return undefined;
 };
