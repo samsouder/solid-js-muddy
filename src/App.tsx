@@ -48,7 +48,9 @@ const App = () => {
         <form
           onSubmit={(event) => {
             const newCoords = {
+              // @ts-ignore
               latitude: parseFloat(event.currentTarget.elements["lat"].value),
+              // @ts-ignore
               longitude: parseFloat(event.currentTarget.elements["lon"].value),
             };
             if (newCoords.latitude && newCoords.longitude) {
@@ -99,9 +101,9 @@ const App = () => {
         >
           <aside class="AppSideBar">
             <dl>
-              <dt>3 day average temp:</dt>
+              <dt>Average Temperature:</dt>
               <dd>{isMuddy()?.averageTemperature.toFixed()} &deg;</dd>
-              <dt>3 day precipitation total:</dt>
+              <dt>Precipitation Total:</dt>
               <dd>{isMuddy()?.precipitation.toPrecision(2)} &Prime;</dd>
             </dl>
           </aside>
