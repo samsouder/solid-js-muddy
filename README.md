@@ -6,7 +6,8 @@ Hopefully this can help serve as a better template for those wanting to experime
 
 ## Requirements
 
-NodeJS (uses NPM as the package manager)
+* NodeJS (uses NPM as the package manager)
+* Create `.env.local` file at project root with `VITE_OPENWEATHER_API_KEY=[INSERT API KEY HERE]`
 
 ## Install
 
