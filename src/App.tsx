@@ -1,4 +1,3 @@
-import "./App.css";
 import MuddyIcon from "./components/MuddyIcon";
 import NotMuddyIcon from "./components/NotMuddyIcon";
 import UnknownIcon from "./components/UnknownIcon";
@@ -38,110 +37,157 @@ const App = () => {
     return weather;
   };
   const [isMuddy] = createResource(coords, muddyCheck);
+  const submitLocationForm = (e: Event) => {
+    e.preventDefault();
+    const newCoords = {
+      // @ts-ignore
+      latitude: parseFloat(e.currentTarget.elements["lat"].value),
+      // @ts-ignore
+      longitude: parseFloat(e.currentTarget.elements["lon"].value),
+    };
+    if (newCoords.latitude && newCoords.longitude) {
+      setLocationFromCoords(newCoords);
+    }
+  };
 
   return (
-    <div class="App">
-      <header class="AppHeader">
-        <h1>Muddy or Not?</h1>
-        <h2>Will it be muddy in the next 3 days?</h2>
-      </header>
-      <article class="AppBar" role="menubar">
-        <form
-          data-testid="location-form"
-          onSubmit={(event) => {
-            const newCoords = {
-              // @ts-ignore
-              latitude: parseFloat(event.currentTarget.elements["lat"].value),
-              // @ts-ignore
-              longitude: parseFloat(event.currentTarget.elements["lon"].value),
-            };
-            if (newCoords.latitude && newCoords.longitude) {
-              setLocationFromCoords(newCoords);
-            }
-
-            event.preventDefault();
-          }}
-        >
-          <button
-            type="button"
-            name="lookup"
-            onClick={() => setLocationFromBrowser()}
-          >
-            Where Am I?
-          </button>
-          &nbsp;&nbsp;&nbsp;&nbsp;
-          <input
-            type="text"
-            name="lat"
-            placeholder="Latitude (decimal)"
-            value={coords()?.latitude}
-          />
-          <input
-            type="text"
-            name="lon"
-            placeholder="Longitude (decimal)"
-            value={coords()?.longitude}
-          />
-          <button type="submit">Muddy?</button>
-        </form>
-      </article>
-      <Show
-        when={coords()?.latitude && coords()?.longitude}
-        fallback={
-          <article class="AppAnswer">
-            <UnknownIcon />
-          </article>
-        }
-      >
-        <ErrorBoundary
-          fallback={
-            <article class="AppAnswer">
-              <p>Error loading weather data</p>
-            </article>
-          }
-        >
-          <Show
-            when={!isMuddy.loading}
-            fallback={
-              <article class="AppAnswer">
-                <p>Loading...</p>
+    <div class="min-h-screen bg-gray-50 py-6 flex flex-col justify-center relative overflow-hidden sm:py-12">
+      <div class="relative p-8 bg-white shadow-xl ring-2 ring-gray-900/10 sm:max-w-lg sm:mx-auto sm:rounded-lg sm:px-10">
+        <div class="max-w-md mx-auto">
+          <div class="divide-y-2 divide-gray-900/10">
+            <div>
+              <header class="">
+                <h1 class="text-6xl text-center font-bold my-6">
+                  Muddy or Not?
+                </h1>
+                <h2 class="text-xl text-center font-light my-6">
+                  Will it be muddy in the next 3 days?
+                </h2>
+              </header>
+              <article class="my-6" role="menubar">
+                <form
+                  class="flex flex-nowrap items-center"
+                  data-testid="location-form"
+                  onSubmit={(e: Event) => submitLocationForm(e)}
+                >
+                  <button
+                    class="flex-none"
+                    type="button"
+                    name="lookup"
+                    onClick={() => setLocationFromBrowser()}
+                  >
+                    <svg
+                      class="flex-none w-6 h-6 fill-blue-500 mr-4"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M12 0c-4.198 0-8 3.403-8 7.602 0 4.198 3.469 9.21 8 16.398 4.531-7.188 8-12.2 8-16.398 0-4.199-3.801-7.602-8-7.602zm0 11c-1.657 0-3-1.343-3-3s1.343-3 3-3 3 1.343 3 3-1.343 3-3 3z" />
+                      Where Am I?
+                    </svg>
+                  </button>
+                  <input
+                    class="flex-auto w-10 ring-2 ring-gray-900/10 rounded-lg p-2 mr-2 shadow-md"
+                    type="text"
+                    inputMode="decimal"
+                    name="lat"
+                    placeholder="Latitude"
+                    value={coords()?.latitude}
+                  />
+                  <input
+                    class="flex-auto w-10 ring-2 ring-gray-900/10 rounded-lg p-2 mr-2 shadow-md"
+                    type="text"
+                    inputMode="decimal"
+                    name="lon"
+                    placeholder="Longitude"
+                    value={coords()?.longitude}
+                  />
+                  <button
+                    class="flex-none rounded-lg p-2 ml-3 bg-blue-500 text-white font-bold shadow-md"
+                    type="submit"
+                  >
+                    Muddy?
+                  </button>
+                </form>
               </article>
-            }
-          >
-            <aside class="AppSideBar">
-              <h3>Forecast</h3>
-              <dl>
-                <dt>Average Temperature:</dt>
-                <dd>{isMuddy()?.averageTemperature.toFixed()} &deg;</dd>
-                <dt>Precipitation Total:</dt>
-                <dd>{isMuddy()?.precipitation.toPrecision(2)} &Prime;</dd>
-              </dl>
-            </aside>
-            <article class="AppAnswer">
-              <Show when={isMuddy()?.isMuddy} fallback={<NotMuddyIcon />}>
-                <MuddyIcon />
-              </Show>
-            </article>
-          </Show>
-        </ErrorBoundary>
-      </Show>
-      <footer class="AppFooter">
-        <p>
-          <a href="https://www.flaticon.com/free-icons/mud">
-            Mud icons created by Freepik - Flaticon
-          </a>
-        </p>
-        <p>
-          <a href="https://www.flaticon.com/free-icons/sun">
-            Sun icons created by Darius Dan - Flaticon
-          </a>
-        </p>
-        <p>
-          <a href="https://www.flaticon.com/free-icons/unknown">
-            Unknown icons created by Freepik - Flaticon
-          </a>
-        </p>
-      </footer>
+              <article class="text-center">
+                <Show
+                  when={coords()?.latitude && coords()?.longitude}
+                  fallback={<UnknownIcon />}
+                >
+                  <ErrorBoundary
+                    fallback={
+                      <p class="text-2xl text-red-500">
+                        Error loading weather data
+                      </p>
+                    }
+                  >
+                    <Show
+                      when={!isMuddy.loading}
+                      fallback={<p class="text-2xl">Loading...</p>}
+                    >
+                      <aside class="">
+                        <h3 class="text-2xl mt-6 mb-3 font-semibold">
+                          Forecast
+                        </h3>
+
+                        <dl class="">
+                          <div class="grid grid-cols-2 gap-2">
+                            <dt class="text-lg font-medium text-gray-500 text-right">
+                              Average Temperature:
+                            </dt>
+                            <dd class="text-3xl leading-7 text-gray-900 text-left">
+                              {isMuddy()?.averageTemperature.toFixed()} &deg;
+                            </dd>
+                          </div>
+                          <div class="grid grid-cols-2 gap-2 mt-4">
+                            <dt class="text-lg font-medium text-gray-500 text-right">
+                              Precipitation Total:
+                            </dt>
+                            <dd class="text-3xl leading-7 text-gray-900 text-left">
+                              {isMuddy()?.precipitation.toPrecision(2)} &Prime;
+                            </dd>
+                          </div>
+                        </dl>
+                      </aside>
+                      <Show
+                        when={isMuddy()?.isMuddy}
+                        fallback={<NotMuddyIcon />}
+                      >
+                        <MuddyIcon />
+                      </Show>
+                    </Show>
+                  </ErrorBoundary>
+                </Show>
+              </article>
+            </div>
+            <footer class="pt-8 flex text-xs flex-col text-center">
+              <p>
+                <a
+                  class="text-cyan-400 hover:text-cyan-800"
+                  href="https://www.flaticon.com/free-icons/mud"
+                >
+                  Mud icons created by Freepik - Flaticon
+                </a>
+              </p>
+              <p>
+                <a
+                  class="text-cyan-400 hover:text-cyan-800"
+                  href="https://www.flaticon.com/free-icons/sun"
+                >
+                  Sun icons created by Darius Dan - Flaticon
+                </a>
+              </p>
+              <p>
+                <a
+                  class="text-cyan-400 hover:text-cyan-800"
+                  href="https://www.flaticon.com/free-icons/unknown"
+                >
+                  Unknown icons created by Freepik - Flaticon
+                </a>
+              </p>
+            </footer>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
