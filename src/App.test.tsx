@@ -50,10 +50,10 @@ describe("App", () => {
     render(App);
 
     // Enter location manually
-    fireEvent.change(screen.getByPlaceholderText("Latitude (decimal)"), {
+    fireEvent.change(screen.getByPlaceholderText("Latitude"), {
       target: { value: "42.3601" },
     });
-    fireEvent.change(screen.getByPlaceholderText("Longitude (decimal)"), {
+    fireEvent.change(screen.getByPlaceholderText("Longitude"), {
       target: { value: "-71.0589" },
     });
 
@@ -76,10 +76,10 @@ describe("App", () => {
     render(App);
 
     // Enter location manually
-    fireEvent.change(screen.getByPlaceholderText("Latitude (decimal)"), {
+    fireEvent.change(screen.getByPlaceholderText("Latitude"), {
       target: { value: "42.3601" },
     });
-    fireEvent.change(screen.getByPlaceholderText("Longitude (decimal)"), {
+    fireEvent.change(screen.getByPlaceholderText("Longitude"), {
       target: { value: "-71.0589" },
     });
 
@@ -107,10 +107,10 @@ describe("App", () => {
     render(App);
 
     // Enter location manually
-    fireEvent.change(screen.getByPlaceholderText("Latitude (decimal)"), {
+    fireEvent.change(screen.getByPlaceholderText("Latitude"), {
       target: { value: "42.3601" },
     });
-    fireEvent.change(screen.getByPlaceholderText("Longitude (decimal)"), {
+    fireEvent.change(screen.getByPlaceholderText("Longitude"), {
       target: { value: "-71.0589" },
     });
 
@@ -160,10 +160,10 @@ describe("App", () => {
     render(App);
 
     // Enter location manually
-    fireEvent.change(screen.getByPlaceholderText("Latitude (decimal)"), {
+    fireEvent.change(screen.getByPlaceholderText("Latitude"), {
       target: { value: "42.3601" },
     });
-    fireEvent.change(screen.getByPlaceholderText("Longitude (decimal)"), {
+    fireEvent.change(screen.getByPlaceholderText("Longitude"), {
       target: { value: "-71.0589" },
     });
 
@@ -199,10 +199,10 @@ describe("App", () => {
     render(App);
 
     // Enter location manually
-    fireEvent.change(screen.getByPlaceholderText("Latitude (decimal)"), {
+    fireEvent.change(screen.getByPlaceholderText("Latitude"), {
       target: { value: "42.3601" },
     });
-    fireEvent.change(screen.getByPlaceholderText("Longitude (decimal)"), {
+    fireEvent.change(screen.getByPlaceholderText("Longitude"), {
       target: { value: "-71.0589" },
     });
 
