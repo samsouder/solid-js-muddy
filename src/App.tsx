@@ -51,10 +51,10 @@ const App = () => {
   };
 
   return (
-    <div class="min-h-screen bg-gray-50 py-6 flex flex-col justify-center relative overflow-hidden sm:py-12">
-      <div class="relative p-8 bg-white shadow-xl ring-2 ring-gray-900/10 sm:max-w-lg sm:mx-auto sm:rounded-lg sm:px-10">
-        <div class="max-w-md mx-auto">
-          <div class="divide-y-2 divide-gray-900/10">
+    <div class="min-h-screen text-black dark:text-white bg-gray-50 dark:bg-gray-800 py-6 flex flex-col justify-center relative overflow-hidden sm:py-12">
+      <div class="relative p-8 bg-white dark:bg-gray-600 shadow-xl ring-2 ring-gray-300 dark:ring-gray-500 sm:max-w-xl sm:mx-auto sm:rounded-lg sm:px-10">
+        <div class="max-w-full mx-auto">
+          <div class="divide-y-2 divide-gray-900/10 dark:divide-gray-500">
             <div>
               <header class="">
                 <h1 class="text-6xl text-center font-bold my-6">
@@ -74,6 +74,8 @@ const App = () => {
                     class="flex-none"
                     type="button"
                     name="lookup"
+                    aria-label="Lookup location"
+                    title="Lookup location"
                     onClick={() => setLocationFromBrowser()}
                   >
                     <svg
@@ -85,7 +87,7 @@ const App = () => {
                     </svg>
                   </button>
                   <input
-                    class="flex-auto w-10 ring-2 ring-gray-900/10 rounded-lg p-2 mr-2 shadow-md"
+                    class="flex-auto w-10 bg-white dark:bg-gray-800 ring-2 ring-gray-300 dark:ring-gray-500 rounded-lg p-2 mr-2 shadow-md"
                     type="text"
                     inputMode="decimal"
                     name="lat"
@@ -93,7 +95,7 @@ const App = () => {
                     value={coords()?.latitude}
                   />
                   <input
-                    class="flex-auto w-10 ring-2 ring-gray-900/10 rounded-lg p-2 mr-2 shadow-md"
+                    class="flex-auto w-10 bg-white dark:bg-gray-800 ring-2 ring-gray-300 dark:ring-gray-500 rounded-lg p-2 mr-2 shadow-md"
                     type="text"
                     inputMode="decimal"
                     name="lon"
@@ -115,7 +117,7 @@ const App = () => {
                 >
                   <ErrorBoundary
                     fallback={
-                      <p class="text-2xl text-red-500">
+                      <p class="text-2xl text-red-500 dark:text-red-200">
                         Error loading weather data
                       </p>
                     }
@@ -124,25 +126,25 @@ const App = () => {
                       when={!isMuddy.loading}
                       fallback={<p class="text-2xl">Loading...</p>}
                     >
-                      <aside class="">
+                      <aside class="grid justify-items-center">
                         <h3 class="text-2xl mt-6 mb-3 font-semibold">
                           Forecast
                         </h3>
 
-                        <dl class="">
+                        <dl class="w-3/4">
                           <div class="grid grid-cols-2 gap-2">
-                            <dt class="text-lg font-medium text-gray-500 text-right">
+                            <dt class="text-lg font-medium text-gray-500 dark:text-gray-300 text-right">
                               Average Temperature:
                             </dt>
-                            <dd class="text-3xl leading-7 text-gray-900 text-left">
+                            <dd class="text-3xl leading-7 text-gray-900 dark:text-gray-100 text-left">
                               {isMuddy()?.averageTemperature.toFixed()} &deg;
                             </dd>
                           </div>
                           <div class="grid grid-cols-2 gap-2 mt-4">
-                            <dt class="text-lg font-medium text-gray-500 text-right">
+                            <dt class="text-lg font-medium text-gray-500 dark:text-gray-300 text-right">
                               Precipitation Total:
                             </dt>
-                            <dd class="text-3xl leading-7 text-gray-900 text-left">
+                            <dd class="text-3xl leading-7 text-gray-900 dark:text-gray-100 text-left">
                               {isMuddy()?.precipitation.toPrecision(2)} &Prime;
                             </dd>
                           </div>
