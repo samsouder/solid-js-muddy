@@ -162,30 +162,12 @@ const App = () => {
               </article>
             </div>
             <footer class="pt-8 flex text-xs flex-col text-center">
-              <p>
-                <a
-                  class="text-cyan-400 hover:text-cyan-800"
-                  href="https://www.flaticon.com/free-icons/mud"
-                >
-                  Mud icons created by Freepik - Flaticon
-                </a>
-              </p>
-              <p>
-                <a
-                  class="text-cyan-400 hover:text-cyan-800"
-                  href="https://www.flaticon.com/free-icons/sun"
-                >
-                  Sun icons created by Darius Dan - Flaticon
-                </a>
-              </p>
-              <p>
-                <a
-                  class="text-cyan-400 hover:text-cyan-800"
-                  href="https://www.flaticon.com/free-icons/unknown"
-                >
-                  Unknown icons created by Freepik - Flaticon
-                </a>
-              </p>
+              <a
+                class="text-blue-400 hover:text-blue-500"
+                href="https://erikflowers.github.io/weather-icons/"
+              >
+                Weather Icons by Erik Flowers
+              </a>
             </footer>
           </div>
         </div>
