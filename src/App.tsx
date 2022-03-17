@@ -5,6 +5,8 @@ import { createResource, createSignal, ErrorBoundary, Show } from "solid-js";
 import { checkIsMuddy, GeoCoordinates, Weather } from "./lib/checkIsMuddy";
 import { getLocation } from "./lib/getLocation";
 import { getFromLocalStorage, setToLocalStorage } from "./lib/cache";
+import LoadingFailed from "./components/LoadingFailed";
+import Forecast from "./components/Forecast";
 
 // Cache location and weather for 1 day
 const locationCacheLength = 1 * 24 * 60 * 60 * 1000;
@@ -115,41 +117,17 @@ const App = () => {
                   when={coords()?.latitude && coords()?.longitude}
                   fallback={<UnknownIcon />}
                 >
-                  <ErrorBoundary
-                    fallback={
-                      <p class="text-2xl text-red-500 dark:text-red-200">
-                        Error loading weather data
-                      </p>
-                    }
-                  >
+                  <ErrorBoundary fallback={<LoadingFailed />}>
                     <Show
                       when={!isMuddy.loading}
-                      fallback={<p class="text-2xl">Loading...</p>}
+                      fallback={
+                        <>
+                          <Forecast loading={true} />
+                          <UnknownIcon />
+                        </>
+                      }
                     >
-                      <aside class="grid justify-items-center">
-                        <h3 class="text-2xl mt-6 mb-3 font-semibold">
-                          Forecast
-                        </h3>
-
-                        <dl class="w-3/4">
-                          <div class="grid grid-cols-2 gap-2">
-                            <dt class="text-lg font-medium text-gray-500 dark:text-gray-300 text-right">
-                              Average Temperature:
-                            </dt>
-                            <dd class="text-3xl leading-7 text-gray-900 dark:text-gray-100 text-left">
-                              {isMuddy()?.averageTemperature.toFixed()} &deg;
-                            </dd>
-                          </div>
-                          <div class="grid grid-cols-2 gap-2 mt-4">
-                            <dt class="text-lg font-medium text-gray-500 dark:text-gray-300 text-right">
-                              Precipitation Total:
-                            </dt>
-                            <dd class="text-3xl leading-7 text-gray-900 dark:text-gray-100 text-left">
-                              {isMuddy()?.precipitation.toPrecision(2)} &Prime;
-                            </dd>
-                          </div>
-                        </dl>
-                      </aside>
+                      <Forecast loading={false} forecast={isMuddy()} />
                       <Show
                         when={isMuddy()?.isMuddy}
                         fallback={<NotMuddyIcon />}
