@@ -112,7 +112,7 @@ const App = () => {
                   </button>
                 </form>
               </article>
-              <article class="text-center">
+              <article class="flex text-center my-6">
                 <Show
                   when={coords()?.latitude && coords()?.longitude}
                   fallback={<UnknownIcon />}
@@ -122,26 +122,37 @@ const App = () => {
                       when={!isMuddy.loading}
                       fallback={
                         <>
-                          <Forecast loading={true} />
-                          <UnknownIcon />
+                          <div class="w-2/3">
+                            <Forecast loading={true} />
+                          </div>
+                          <div class="w-1/3">
+                            <UnknownIcon />
+                          </div>
                         </>
                       }
                     >
-                      <Forecast loading={false} forecast={isMuddy()} />
-                      <Show
-                        when={isMuddy()?.isMuddy}
-                        fallback={<NotMuddyIcon />}
-                      >
-                        <MuddyIcon />
-                      </Show>
+                      <div class="w-2/3">
+                        <Forecast
+                          loading={isMuddy.loading}
+                          forecast={isMuddy()}
+                        />
+                      </div>
+                      <div class="w-1/3">
+                        <Show
+                          when={isMuddy()?.isMuddy}
+                          fallback={<NotMuddyIcon />}
+                        >
+                          <MuddyIcon />
+                        </Show>
+                      </div>
                     </Show>
                   </ErrorBoundary>
                 </Show>
               </article>
             </div>
-            <footer class="pt-8 flex text-xs flex-col text-center">
+            <footer class="flex text-xs flex-col text-center">
               <a
-                class="text-blue-400 hover:text-blue-500"
+                class="mt-6 text-blue-400 hover:text-blue-500"
                 href="https://erikflowers.github.io/weather-icons/"
               >
                 Weather Icons by Erik Flowers
