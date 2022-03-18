@@ -35,9 +35,9 @@ describe("App", () => {
       "Will it be muddy in the next 3 days?"
     );
     expect(
-      screen.getByRole("button", { name: "Where Am I?" })
+      screen.getByRole("button", { name: "Lookup location" })
     ).toBeInTheDocument();
-    expect(screen.getByAltText("Unknown Weather Icon")).toBeInTheDocument();
+    expect(screen.getByLabelText("Unknown Weather Icon")).toBeInTheDocument();
   });
 
   it("shows error if API request fails", async () => {
@@ -60,9 +60,13 @@ describe("App", () => {
     const submit = screen.getByRole("button", { name: "Muddy?" });
     fireEvent.click(submit);
 
-    await waitForElementToBeRemoved(() => screen.getByText("Loading..."));
+    await waitForElementToBeRemoved(() =>
+      screen.getByLabelText("Unknown Weather Icon")
+    );
 
-    expect(screen.getByText("Error loading weather data")).toBeInTheDocument();
+    expect(
+      screen.getByText("Error loading weather data, please try again")
+    ).toBeInTheDocument();
   });
 
   it("shows error if no daily weather data returns from weather API", async () => {
@@ -86,9 +90,13 @@ describe("App", () => {
     const submit = screen.getByRole("button", { name: "Muddy?" });
     fireEvent.click(submit);
 
-    await waitForElementToBeRemoved(() => screen.getByText("Loading..."));
+    await waitForElementToBeRemoved(() =>
+      screen.getByLabelText("Unknown Weather Icon")
+    );
 
-    expect(screen.getByText("Error loading weather data")).toBeInTheDocument();
+    expect(
+      screen.getByText("Error loading weather data, please try again")
+    ).toBeInTheDocument();
   });
 
   it("does not break with odd weather data from weather API", async () => {
@@ -117,9 +125,11 @@ describe("App", () => {
     const submit = screen.getByRole("button", { name: "Muddy?" });
     fireEvent.click(submit);
 
-    await waitForElementToBeRemoved(() => screen.getByText("Loading..."));
+    await waitForElementToBeRemoved(() =>
+      screen.getByLabelText("Unknown Weather Icon")
+    );
 
-    expect(screen.getByAltText("Not Muddy Weather Icon")).toBeInTheDocument();
+    expect(screen.getByLabelText("Not Muddy Weather Icon")).toBeInTheDocument();
   });
 
   it.each([
@@ -170,11 +180,13 @@ describe("App", () => {
     const submit = screen.getByRole("button", { name: "Muddy?" });
     fireEvent.click(submit);
 
-    await waitForElementToBeRemoved(() => screen.getByText("Loading..."));
+    await waitForElementToBeRemoved(() =>
+      screen.getByLabelText("Unknown Weather Icon")
+    );
 
     const iconAlt =
       muddyOrNot === "muddy" ? "Muddy Weather Icon" : "Not Muddy Weather Icon";
-    expect(screen.getByAltText(iconAlt)).toBeInTheDocument();
+    expect(screen.getByLabelText(iconAlt)).toBeInTheDocument();
   });
 
   it("shows cached weather data after first API hit", async () => {
@@ -209,9 +221,11 @@ describe("App", () => {
     const submit = screen.getByRole("button", { name: "Muddy?" });
     fireEvent.click(submit);
 
-    await waitForElementToBeRemoved(() => screen.getByText("Loading..."));
+    await waitForElementToBeRemoved(() =>
+      screen.getByLabelText("Unknown Weather Icon")
+    );
 
-    expect(screen.getByAltText("Muddy Weather Icon")).toBeInTheDocument();
+    expect(screen.getByLabelText("Muddy Weather Icon")).toBeInTheDocument();
 
     // Mock an API failure (which shouldn't hit)
     mswServer.use(
@@ -223,9 +237,11 @@ describe("App", () => {
     // Click submit again
     fireEvent.click(submit);
 
-    await waitForElementToBeRemoved(() => screen.getByText("Loading..."));
+    await waitForElementToBeRemoved(() =>
+      screen.getByLabelText("Unknown Weather Icon")
+    );
 
-    expect(screen.getByAltText("Muddy Weather Icon")).toBeInTheDocument();
+    expect(screen.getByLabelText("Muddy Weather Icon")).toBeInTheDocument();
   });
 
   it("does nothing if checking muddy with no location", async () => {
@@ -241,7 +257,7 @@ describe("App", () => {
     const submit = screen.getByRole("button", { name: "Muddy?" });
     fireEvent.click(submit);
 
-    expect(screen.getByAltText("Unknown Weather Icon")).toBeInTheDocument();
+    expect(screen.getByLabelText("Unknown Weather Icon")).toBeInTheDocument();
   });
 
   it("fetches geolocation, fill in lat + long, and run weather API", async () => {
@@ -278,9 +294,9 @@ describe("App", () => {
     render(App);
 
     // Pick location automatically
-    fireEvent.click(screen.getByRole("button", { name: "Where Am I?" }));
+    fireEvent.click(screen.getByRole("button", { name: "Lookup location" }));
 
-    await waitFor(() => screen.getByAltText("Muddy Weather Icon"));
+    await waitFor(() => screen.getByLabelText("Muddy Weather Icon"));
 
     // Location is filled in?
     expect(screen.getByTestId("location-form")).toHaveFormValues({
